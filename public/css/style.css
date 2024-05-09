@@ -1,0 +1,44 @@
+.product-form {
+    width: 100%;
+   }
+
+th {
+    font-size: 30px;
+    padding-right: 30px;
+   }
+
+td {
+    font-size: 20px;
+    padding-right: 30px;
+    padding-bottom: 30px;
+   }
+
+dt {
+    font-size: 20px;
+    padding-bottom: 15px;
+   }
+
+dl {
+    font-size: 20px;
+   }
+
+.create-button {
+    padding-top: 30px;
+   }
+
+.create-form label {
+    font-size: 20px;
+   }
+
+.create-form {
+    width: 40%;
+   }
+
+.edit-form {
+    width: 40%;
+   }
+
+.edit-button {
+    padding-top: 30px;
+}
+
