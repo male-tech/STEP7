@@ -14,12 +14,11 @@
             <input type="text" name="search" class="form-control product-form" placeholder="検索キーワード" value="{{ request('search') }}">
         </div>
         <div class="col-sm-12 col-md-3">
-            <select name="company_name" class="form-select product-form" value="{{ request('company_name')}}">
+            <select name="company_id" class="form-select product-form" value="{{ request('company_id')}}">
             <option selected disabled>メーカー名</option>
-                <option>Coca-Cola</option>
-                <option>伊藤園</option>
-                <option>キリン</option>
-                <option>サントリー</option>
+                @foreach($companies as $company)
+                    <option value="{{ $company->id }}">{{ $company->company_name }}</option>
+                @endforeach
             </select>
         </div>
         <div class="col-sm-12 col-md-1">
@@ -49,7 +48,7 @@
                     <td>{{$product->product_name}}</td>
                     <td>{{$product->price}}</td>
                     <td>{{$product->stock}}</td>
-                    <td>{{$product->company_name}}</td>
+                    <td>{{$product->company->company_name}}</td>
                     <td><a href="/show/{{$product->id}}" class="btn btn-info btn-sm mx-1">詳細</a>
                     <form method="POST" action="{{ route('product.destroy',['id'=>$product->id]) }}" 
                     class="d-inline" >

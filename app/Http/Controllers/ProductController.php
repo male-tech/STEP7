@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\Company;
+
 
 class ProductController extends Controller
 {
@@ -17,6 +19,7 @@ class ProductController extends Controller
         ['products' => $products]);
     }
 
+
     public function destroy($id){
 
         $product = Product::find($id);
@@ -28,26 +31,30 @@ class ProductController extends Controller
     public function index(Request $request){
 
         $query = Product::query();
+        
 
         if($search = $request->search){
             $query->where("product_name", "LIKE", "%{$search}%");}
 
-        if($company_name = $request->company_name){
-            $query->where("company_name", "LIKE", "$company_name");}
+        if($company_id = $request->company_id){
+            $query->where("company_id", "LIKE", "$company_id");}
 
             $products = $query->get();
+            $companies = Company::distinct()->get();
+            
+            
 
         return view('product', 
-        ['products' => $products]);
+        ['products' => $products,
+         'companies' => $companies]);
     }
 
     //商品新規登録画面
     public function create(){
 
-        $products = Product::all();
-        return view('create',
-        ['products' => $products]);
-
+        $companies = Company::distinct()->get();
+    
+        return view('create', ['companies' => $companies]);
         
     }
 
@@ -79,9 +86,11 @@ class ProductController extends Controller
     public function edit($id){
 
         $product = Product::find($id);
+        $companies = Company::distinct()->get();
 
         return view('edit',
-        ['product' => $product]);
+        ['product' => $product,
+        'companies' => $companies]);
 
     }
 

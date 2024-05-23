@@ -9,16 +9,28 @@ class Product extends Model
 
     protected $table = 'products';
 
+
     protected $fillable =
     [
         'product_name',
+        'company_id',
         'price',
         'stock',
-        'company_name',
         'comment',
         'image',
            
     ];
+
+    public function sales()
+    {
+        return $this->hasMany(Sale::class);
+    }
+
+    
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
     
 
     public function getList() {
@@ -32,7 +44,7 @@ class Product extends Model
 
         $request->validate([
             'product_name'=>'required',
-            'company_name'=>'required',
+            'company_id'=>'required',
             'price'=>'required',
             'stock'=>'required',
             'comment'=>'nullable',
@@ -41,7 +53,7 @@ class Product extends Model
 
         $product = new Product([
                 'product_name' => $request->get('product_name'),
-                'company_name' => $request->get('company_name'),
+                'company_id' => $request->get('company_id'),
                 'price' => $request->get('price'),
                 'stock' => $request->get('stock'),
                 'comment' => $request->get('comment'),

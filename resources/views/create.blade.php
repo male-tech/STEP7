@@ -17,13 +17,12 @@
 
         <div class="mb-3">
             <label for="company=name" class="form-label">メーカー名*</label>
-            <select id="company_name" name="company_name" class="form-select create-form">
-                <option selected disabled>メーカー名</option>
-                <option>Coca-Cola</option>
-                <option>伊藤園</option>
-                <option>キリン</option>
-                <option>サントリー</option>
-            </select>          
+            <select name="company_id" class="form-select create-form">
+            <option selected disabled> </option>
+                @foreach($companies as $company)
+                    <option value="{{ $company->id }}">{{ $company->company_name }}</option>
+                @endforeach
+            </select>  
         </div>
 
         <div class="mb-3">
