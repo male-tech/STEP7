@@ -8,7 +8,7 @@
     <h1>商品情報一覧</h1>
     
     <div class='search mt-5'>
-        <form action="{{ route('product.index') }}" method="GET" class="row g-3" enctype="multipart/form-data">
+        <form id="serch-form" method="GET" class="row g-3" enctype="multipart/form-data">
         @csrf
         <div class="col-sm-12 col-md-3">
             <input type="text" name="search" class="form-control product-form" placeholder="検索キーワード" value="{{ request('search') }}">
@@ -21,26 +21,48 @@
                 @endforeach
             </select>
         </div>
+        <div class="col-sm-12 col-md-3">
+            <input type="number" name="min_price" class="form-control product-form" placeholder="最小価格" value="{{ request('min_price') }}">
+        </div>
+        <div class="col-sm-12 col-md-3">
+            <input type="number" name="max_price" class="form-control product-form" placeholder="最大価格" value="{{ request('max_price') }}">
+        </div>
+        <div class="col-sm-12 col-md-3">
+            <input type="number" name="min_stock" class="form-control product-form" placeholder="最小在庫" value="{{ request('min_stock') }}">
+        </div>
+        <div class="col-sm-12 col-md-3">
+            <input type="number" name="max_stock" class="form-control product-form" placeholder="最大在庫" value="{{ request('max_stock') }}">
+        </div>
         <div class="col-sm-12 col-md-1">
-            <button class="btn btn-outline-secondary" type="submit">検索</button>
+            <button id="search-button" class="btn btn-outline-secondary" type="submit">検索</button>
         </div>
         </form>
+        <div class="search-results"></div>
     </div>
 
     <div class="products mt-5">
         <table>
             <thead>
                 <tr>
-                    <th>ID</th>
+                    <th>ID
+                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'id', 'direction' => 'asc']) }}">↑</a>
+                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'id', 'direction' => 'desc']) }}">↓</a>
+                    </th>
                     <th>商品画像</th>
                     <th>商品名</th>
-                    <th>価格</th>
-                    <th>在庫数</th>
+                    <th>価格
+                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'price', 'direction' => 'asc']) }}">↑</a>
+                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'price', 'direction' => 'desc']) }}">↓</a>
+                    </th>
+                    <th>在庫数
+                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'stock', 'direction' => 'asc']) }}">↑</a>
+                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'stock', 'direction' => 'desc']) }}">↓</a>
+                    </th>
                     <th>メーカー名</th>
                     <th><a href="{{ route('product.create') }}" class="btn btn-primary mb-3">新規登録</a></th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="products-tbody">
                 @foreach ($products as $product)
                 <tr>
                     <td>{{$product->id}}</td>
@@ -50,12 +72,11 @@
                     <td>{{$product->stock}}</td>
                     <td>{{$product->company->company_name}}</td>
                     <td><a href="/show/{{$product->id}}" class="btn btn-info btn-sm mx-1">詳細</a>
-                    <form method="POST" action="{{ route('product.destroy',['id'=>$product->id]) }}" 
+                    <form id="delete-form" method="POST" action="{{ route('product.destroy',['id'=>$product->id]) }}" 
                     class="d-inline" >
                             @csrf
                             @method('POST')
-                            <button type="submit" class="btn btn-danger btn-sm mx-1" onclick="return checkDelete()">削除</button>
-                            <script src="{{ asset('js/product.js') }}"></script>
+                            <button id="delete-button" type="submit" class="btn btn-danger btn-sm mx-1" onclick="return checkDelete()">削除</button>
                         </form>
                     </td>
                 </tr>
@@ -64,4 +85,6 @@
         </table>
     </div>
 </div>
+
+<script src="{{ asset('js/product.js') }}"></script>
 @endsection

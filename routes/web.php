@@ -23,7 +23,9 @@ Auth::routes();
 
 Route::get('/products', [App\Http\Controllers\ProductController::class, 'showList'])->name('product');
 
-Route::post('/destroy{id}', [App\Http\Controllers\ProductController::class, 'destroy'])->name('product.destroy');
+Route::get('/search', [App\Http\Controllers\ProductController::class, 'search']);
+
+Route::post('/destroy/{id}', [App\Http\Controllers\ProductController::class, 'destroy'])->name('product.destroy');
 
 Route::get('/products', [App\Http\Controllers\ProductController::class, 'index'])->name('product.index');
 

@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Sale;
 use Illuminate\Database\Seeder;
 
 class SalesTableSeeder extends Seeder
@@ -14,6 +14,22 @@ class SalesTableSeeder extends Seeder
      */
     public function run()
     {
-        //
+        Sale::create([
+            'product_id'=>'3',
+        ]);
+
+        Sale::create([
+            'product_id'=>'4',
+        ]);
+
+        Sale::create([
+            'product_id'=>'5',
+        ]);
+
+        Sale::create([
+            'product_id'=>'6',
+        ]);
+
+
     }
 }
