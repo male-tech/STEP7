@@ -28,49 +28,25 @@ class ProductController extends Controller
 
     }
 
-    public function index(Request $request){
+    public function index(Request $request)
+    {
+        $products = $this->filterProducts($request);
+        $companies = Company::all();
 
-        $query = Product::query();
-        
-
-        if($search = $request->search){
-            $query->where("product_name", "LIKE", "%{$search}%");}
-
-        if($company_id = $request->company_id){
-            $query->where("company_id", "LIKE", "$company_id");}
-
-        if($min_price = $request->min_price){
-                $query->where('price', '>=', $min_price);
-            }
-        
-        if($max_price = $request->max_price){
-                $query->where('price', '<=', $max_price);
-            }
-        
-        if($min_stock = $request->min_stock){
-                $query->where('stock', '>=', $min_stock);
-            }
-        
-        if($max_stock = $request->max_stock){
-                $query->where('stock', '<=', $max_stock);
-            }
-        
-        if($sort = $request->sort){
-            $direction = $request->direction == 'desc' ? 'desc' : 'asc';
-            $query->orderBy($sort,$direction);
-        }
-
-            $products = $query->get();
-            $companies = Company::distinct()->get();
-            
-            
-
-        return view('product', 
-        ['products' => $products,
-         'companies' => $companies]);
+        return view('product', [
+            'products' => $products,
+            'companies' => $companies
+        ]);
     }
 
     public function search(Request $request)
+    {
+        $products = $this->filterProducts($request);
+
+        return response()->json($products);
+    }
+
+    private function filterProducts(Request $request)
     {
         $query = Product::query();
 
@@ -82,10 +58,26 @@ class ProductController extends Controller
             $query->where('company_id', $company_id);
         }
 
-        $products = $query->with('company')->get();
+        if ($min_price = $request->input('min_price')) {
+            $query->where('price', '>=', $min_price);
+        }
 
-        return response()->json($products);
+        if ($max_price = $request->input('max_price')) {
+            $query->where('price', '<=', $max_price);
+        }
+
+        if ($min_stock = $request->input('min_stock')) {
+            $query->where('stock', '>=', $min_stock);
+        }
+
+        if ($max_stock = $request->input('max_stock')) {
+            $query->where('stock', '<=', $max_stock);
+        }
+
+        return $query->with('company')->get();
     }
+
+   
 
     //商品新規登録画面
     public function create(){

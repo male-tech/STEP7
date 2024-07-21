@@ -3,12 +3,13 @@
 
 <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 
+
 @section('content')
 <div class="container">
     <h1>商品情報一覧</h1>
     
     <div class='search mt-5'>
-        <form id="serch-form" method="GET" class="row g-3" enctype="multipart/form-data">
+        <form id="search-form" method="GET" class="row g-3" enctype="multipart/form-data">
         @csrf
         <div class="col-sm-12 col-md-3">
             <input type="text" name="search" class="form-control product-form" placeholder="検索キーワード" value="{{ request('search') }}">
@@ -41,23 +42,15 @@
     </div>
 
     <div class="products mt-5">
-        <table>
+        <table id="product-table">
             <thead>
                 <tr>
                     <th>ID
-                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'id', 'direction' => 'asc']) }}">↑</a>
-                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'id', 'direction' => 'desc']) }}">↓</a>
                     </th>
                     <th>商品画像</th>
                     <th>商品名</th>
-                    <th>価格
-                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'price', 'direction' => 'asc']) }}">↑</a>
-                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'price', 'direction' => 'desc']) }}">↓</a>
-                    </th>
-                    <th>在庫数
-                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'stock', 'direction' => 'asc']) }}">↑</a>
-                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'stock', 'direction' => 'desc']) }}">↓</a>
-                    </th>
+                    <th>価格</th>
+                    <th>在庫数</th>
                     <th>メーカー名</th>
                     <th><a href="{{ route('product.create') }}" class="btn btn-primary mb-3">新規登録</a></th>
                 </tr>
@@ -76,12 +69,12 @@
                     class="d-inline" >
                             @csrf
                             @method('POST')
-                            <button id="delete-button" type="submit" class="btn btn-danger btn-sm mx-1" onclick="return checkDelete()">削除</button>
+                            <input data-product_id="{{$product->id}}" type="button" class="btn btn-danger btn-sm mx-1" value="削除">
                         </form>
                     </td>
                 </tr>
+                @endforeach
             </tbody>
-            @endforeach
         </table>
     </div>
 </div>

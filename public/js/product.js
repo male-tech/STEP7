@@ -1,12 +1,51 @@
-$(document).ready(function(){
-    $('#search-button').on('click',function(){
-        var formData = $('#search-form').serialize();
+$(document).ready(function(){ 
 
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="token"]').attr('content')
+        }
+    });
+
+    $('#product-table').tablesorter();
+    
+    $(document).on('click', '.btn-danger', function(e) {
+        e.preventDefault();
+        var deleteConfirm = confirm('削除してよろしいでしょうか？');
+        if(deleteConfirm == true){
+            var clickEle = $(this);
+            var productId = clickEle.attr('data-product_id');
+
+            $.ajax({
+                url: '/destroy/'+productId,
+                type: 'POST',
+                data: {'_token': $('meta[name="csrf-token"]').attr('content')},})
+                .done(function() {
+                    clickEle.parents('tr').remove();
+                  })
+                .fail(function() {
+                    alert('エラー');
+                  });
+            }else{
+                (function(e) {
+                    e.preventDefault()
+                  });
+            }
+        
+    });
+    
+    $('#search-button').on('click',function(e){
+        e.preventDefault();
+        var searchText = $('#search-form').serialize();
+
+        console.log(searchText)
         $.ajax({
             url: '/search',
             type: 'GET',
-            data: formData,
-            success: function(data){
+            data: searchText,
+            dataType: 'json',
+            })
+            .done(function(data) {
+                console.log (data)
                 $('#products-tbody').empty();
                 if (data.length > 0){
                     $.each(data, function(index,product){
@@ -20,49 +59,27 @@ $(document).ready(function(){
                             '<td>' + product.company.company_name + '</td>' +
                             '<td>' +
                                 '<a href="/show/' + product.id + '" class="btn btn-info btn-sm mx-1">詳細</a>' +
-                                '<form method="POST" action="/product/destroy/' + product.id + '" class="d-inline">' +
-                                    '@csrf' +
-                                    '@method("POST")' +
-                                    '<button type="submit" class="btn btn-danger btn-sm mx-1" onclick="return checkDelete()">削除</button>' +
+                                '<form id="delete-form" method="POST" action="/destroy/' + product.id + '" class="d-inline">'  +         
+                                '<input type="hidden" name="_method" value="POST">' + 
+                                '<input type="hidden" name="_token" value="' + $('meta[name="csrf-token"]').attr('content') + '">'+
+                                '<button data-product_id="{{$product->id}}" type="submit" class="btn btn-danger btn-sm mx-1">削除</button>' +
                                 '</form>' +
                             '</td>' +
                         '</tr>'
                         );
                     });
-                } 
-            },
+                    $("#product-table").trigger("update");
+                    
+
+                } else {
+                    $('#products-tbody').append('<tr><td colspan="7">検索結果が見つかりませんでした。</td></tr>');
+                }
+        }).fail(function(xhr, status, error) {
+            console.log('Error: ' + error);
         });
-    });
+    }); 
+
 });
-
-$(document).ready(function() {
-    $('#delete-button').click(function() {
-        
-         var button = $(this);
-         var form = button.closest('#delete-form');
-         var productId = form.data('id');
-
-        $.ajax({
-            url: '/destroy' + productId,
-            type: 'POST',
-            data: form.serialize(),
-            success: function() {
-                $('#product-' + productId).remove();
-            },
-            error: function(xhr) {
-                alert('削除に失敗しました: ' + xhr.responseText);
-            }
-        });
-    });
-});
-
-function checkDelete(){
-    if(window.confirm('削除してもよろしいですか？')){
-        return true;
-    } else {
-        return false;
-    }
-}
 
 
 

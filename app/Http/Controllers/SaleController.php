@@ -21,15 +21,25 @@ class SaleController extends Controller
             return response()->json(['message' => '商品が在庫不足です'], 400);
         }
 
-        $product->stock -= $quantity;
-        $product->save();
+        DB::beginTransaction();
 
-        $sale = new Sale([
-            'product_id' => $productId,
-        ]);
+        try {
+           
+            $product->stock -= $quantity;
+            $product->save();
+
+            $sale = new Sale([
+            'product_id' => $productId,]);
     
-        $sale->save();
+            $sale->save();
     
+            DB::commit();
+           
+       } catch (\Exception $e) {
+           DB::rollback();
+           return back();
+       }
+        
         return response()->json(['message' => '購入成功']);
     }
 }
