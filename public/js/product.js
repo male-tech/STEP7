@@ -59,10 +59,10 @@ $(document).ready(function(){
                             '<td>' + product.company.company_name + '</td>' +
                             '<td>' +
                                 '<a href="/show/' + product.id + '" class="btn btn-info btn-sm mx-1">詳細</a>' +
-                                '<form id="delete-form" method="POST" action="destroy/' + product.id + '" class="d-inline">'  +         
+                                '<form id="delete-form" method="POST" action="/destroy/' + product.id + '" class="d-inline">'  +         
                                 '<input type="hidden" name="_method" value="POST">' + 
                                 '<input type="hidden" name="_token" value="' + $('meta[name="csrf-token"]').attr('content') + '">'+
-                                '<button data-product_id="{{$product->id}}" type="submit" class="btn btn-danger btn-sm mx-1">削除</button>' +
+                                '<button data-product_id="' + product.id + '" type="submit" class="btn btn-danger btn-sm mx-1">削除</button>' +
                                 '</form>' +
                             '</td>' +
                         '</tr>'
